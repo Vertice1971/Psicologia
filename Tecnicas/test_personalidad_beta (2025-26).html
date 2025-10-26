@@ -1,0 +1,396 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test de Personalidad Multifactorial</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+        }
+        
+        h1 {
+            color: #667eea;
+            text-align: center;
+            margin-bottom: 10px;
+            font-size: 2em;
+        }
+        
+        .subtitle {
+            text-align: center;
+            color: #666;
+            margin-bottom: 15px;
+            font-size: 0.9em;
+        }
+        
+        .progress-bar {
+            width: 100%;
+            height: 8px;
+            background: #e0e0e0;
+            border-radius: 10px;
+            margin-bottom: 30px;
+            overflow: hidden;
+        }
+        
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
+            width: 0%;
+            transition: width 0.3s ease;
+        }
+        
+        .question-container {
+            margin-bottom: 30px;
+            padding: 25px;
+            background: #f8f9fa;
+            border-radius: 15px;
+            border-left: 5px solid #667eea;
+        }
+        
+        .question-number {
+            color: #667eea;
+            font-weight: bold;
+            margin-bottom: 10px;
+            font-size: 0.9em;
+        }
+        
+        .question-text {
+            font-size: 1.1em;
+            color: #333;
+            margin-bottom: 20px;
+            line-height: 1.5;
+        }
+        
+        .options {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+        
+        .option {
+            display: flex;
+            align-items: center;
+            padding: 15px;
+            background: white;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .option:hover {
+            border-color: #667eea;
+            background: #f0f4ff;
+            transform: translateX(5px);
+        }
+        
+        .option input[type="radio"] {
+            margin-right: 12px;
+            cursor: pointer;
+            width: 20px;
+            height: 20px;
+            accent-color: #667eea;
+        }
+        
+        .option label {
+            cursor: pointer;
+            flex: 1;
+            font-size: 1em;
+            color: #555;
+        }
+        
+        .option input[type="radio"]:checked + label {
+            color: #667eea;
+            font-weight: 600;
+        }
+        
+        .button-container {
+            text-align: center;
+            margin-top: 30px;
+        }
+        
+        button {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 15px 40px;
+            font-size: 1.1em;
+            border-radius: 30px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+        }
+        
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.6);
+        }
+        
+        button:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+            box-shadow: none;
+            transform: none;
+        }
+        
+        .results {
+            display: none;
+        }
+        
+        .results.show {
+            display: block;
+        }
+        
+        .result-card {
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            padding: 25px;
+            border-radius: 15px;
+            margin-bottom: 20px;
+            border-left: 5px solid #667eea;
+        }
+        
+        .result-title {
+            font-size: 1.3em;
+            color: #667eea;
+            margin-bottom: 10px;
+            font-weight: bold;
+        }
+        
+        .result-score {
+            font-size: 2em;
+            color: #764ba2;
+            font-weight: bold;
+        }
+        
+        .result-max {
+            font-size: 0.9em;
+            color: #666;
+        }
+        
+        .hidden {
+            display: none;
+        }
+        
+        @media (max-width: 600px) {
+            .container {
+                padding: 20px;
+            }
+            
+            h1 {
+                font-size: 1.5em;
+            }
+            
+            .question-text {
+                font-size: 1em;
+            }
+            
+            button {
+                padding: 12px 30px;
+                font-size: 1em;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Test de Personalidad Multifactorial</h1>
+        <p class="subtitle">Grupo Psicología 2º Bachillerato<br>IES Juan de la Cierva</p>
+        <p class="subtitle">Responde con sinceridad a todas las preguntas</p>
+        
+        <div class="progress-bar">
+            <div class="progress-fill" id="progressFill"></div>
+        </div>
+        
+        <form id="testForm">
+            <div id="questionsContainer"></div>
+            
+            <div class="button-container">
+                <button type="submit" id="submitBtn">Ver Resultados</button>
+            </div>
+        </form>
+        
+        <div class="results" id="results">
+            <h1>Tus Resultados</h1>
+            <div id="resultsContainer"></div>
+            <div class="button-container">
+                <button type="button" onclick="location.reload()">Realizar Test de Nuevo</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const questions = [
+            // Cuestionario 1 – Carácter risueño
+            {id: 'q1_1', text: 'En una entrevista de trabajo, ¿mantendrías la compostura?', factor: 'riseño', scores: {'nada': 2, 'poco': 1, 'bastante': 0, 'muy': 0}},
+            {id: 'q1_2', text: '¿El estrés provocado por un examen hace que cambie tu estado de ánimo?', factor: 'riseño', scores: {'nada': 2, 'poco': 1, 'bastante': 0, 'muy': 0}},
+            {id: 'q1_3', text: 'Cuando te encuentras en un espacio público (como por ejemplo un ascensor), ¿tiendes a reírte?', factor: 'riseño', scores: {'nada': 0, 'poco': 0, 'bastante': 1, 'muy': 2}},
+            {id: 'q1_4', text: 'Cuando te cruzas con una amistad por la calle, ¿tiendes a reírte?', factor: 'riseño', scores: {'nada': 0, 'poco': 0, 'bastante': 1, 'muy': 2}},
+            {id: 'q1_5', text: 'Te encuentras exponiendo en medio de clase, ¿te reirías?', factor: 'riseño', scores: {'nada': 0, 'poco': 0, 'bastante': 1, 'muy': 2}},
+            
+            // Cuestionario 2 – Amabilidad y empatía
+            {id: 'q2_1', text: 'Si veo a una persona mayor con dificultad para cruzar, la ignoro.', factor: 'amabilidad', scores: {'nada': 2, 'poco': 1, 'bastante': 0, 'muy': 0}},
+            {id: 'q2_2', text: 'Si una persona no tiene comida, le comparto mi comida.', factor: 'amabilidad', scores: {'nada': 0, 'poco': 0, 'bastante': 1, 'muy': 2}},
+            {id: 'q2_3', text: 'Si alguien no llega a coger algo de una estantería, le ayudo a cogerlo.', factor: 'amabilidad', scores: {'nada': 0, 'poco': 0, 'bastante': 1, 'muy': 2}},
+            {id: 'q2_4', text: 'Si algún compañero está obligado a ir a clase y no quiere, lo dejo solo.', factor: 'amabilidad', scores: {'nada': 2, 'poco': 1, 'bastante': 0, 'muy': 0}},
+            {id: 'q2_5', text: 'Cuando voy a un restaurante, no doy las gracias a los camareros.', factor: 'amabilidad', scores: {'nada': 2, 'poco': 1, 'bastante': 0, 'muy': 0}},
+            {id: 'q2_6', text: 'Si alguien no ha terminado la tarea y yo sí, le ignoro.', factor: 'amabilidad', scores: {'nada': 2, 'poco': 1, 'bastante': 0, 'muy': 0}},
+            
+            // Cuestionario 3 – Sociabilidad e iniciativa
+            {id: 'q3_1', text: 'En el caso de que estés en un bar y necesites algo, ¿te daría vergüenza pedirlo?', factor: 'sociabilidad', scores: {'nada': 2, 'poco': 1, 'bastante': 0, 'muy': 0}},
+            {id: 'q3_2', text: '¿Sales de tu casa cada vez que tienes la posibilidad de salir?', factor: 'sociabilidad', scores: {'nada': 0, 'poco': 0, 'bastante': 1, 'muy': 2}},
+            {id: 'q3_3', text: '¿Te dan miedo los bichos?', factor: 'sociabilidad', scores: {'nada': 2, 'poco': 1, 'bastante': 0, 'muy': 0}},
+            {id: 'q3_4', text: 'Cuando conoces a alguien, ¿inicias tú la conversación?', factor: 'sociabilidad', scores: {'nada': 0, 'poco': 0, 'bastante': 1, 'muy': 2}},
+            {id: 'q3_5', text: 'Cuando estás en un lugar público, ¿sueles llamar la atención?', factor: 'sociabilidad', scores: {'nada': 0, 'poco': 0, 'bastante': 1, 'muy': 2}},
+            {id: 'q3_6', text: '¿Tienes tus cosas ordenadas?', factor: 'sociabilidad', scores: {'nada': 0, 'poco': 0, 'bastante': 1, 'muy': 2}},
+            
+            // Cuestionario 4 – Celos e inseguridad afectiva
+            {id: 'q4_1', text: '¿Te cabrearías si tu pareja está hablando con otras personas y le empiezan a acariciar el pelo?', factor: 'celos', scores: {'nada': 0, 'poco': 0, 'bastante': 1, 'muy': 2}},
+            {id: 'q4_2', text: '¿Te molestaría si pillas a tu pareja hablando con otra persona por fotos?', factor: 'celos', scores: {'nada': 0, 'poco': 0, 'bastante': 1, 'muy': 2}},
+            {id: 'q4_3', text: '¿Te afectaría que tu pareja le preste una sudadera a otra persona?', factor: 'celos', scores: {'nada': 0, 'poco': 0, 'bastante': 1, 'muy': 2}},
+            {id: 'q4_4', text: '¿Le dejarías a tu pareja acompañar a otra persona a su casa?', factor: 'celos', scores: {'nada': 2, 'poco': 1, 'bastante': 0, 'muy': 0}},
+            {id: 'q4_5', text: 'Si una amistad de tu pareja está llorando, ¿le llamarías para que vaya a consolarla?', factor: 'celos', scores: {'nada': 2, 'poco': 1, 'bastante': 0, 'muy': 0}},
+            {id: 'q4_6', text: '¿Te molestaría que tu pareja ayude a otra persona si esta lo necesita?', factor: 'celos', scores: {'nada': 0, 'poco': 0, 'bastante': 1, 'muy': 2}},
+            
+            // Cuestionario 5 – Escrupulosidad y limpieza
+            {id: 'q5_1', text: 'No me afecta utilizar el transporte público o incluso comer en él si es necesario.', factor: 'escrupulosidad', scores: {'nada': 2, 'poco': 1, 'bastante': 0, 'muy': 0}},
+            {id: 'q5_2', text: 'Me provocan rechazo las migas y restos de comida de otra persona.', factor: 'escrupulosidad', scores: {'nada': 0, 'poco': 0, 'bastante': 1, 'muy': 2}},
+            {id: 'q5_3', text: 'No soy capaz de comer del mismo recipiente que otra persona.', factor: 'escrupulosidad', scores: {'nada': 0, 'poco': 0, 'bastante': 1, 'muy': 2}},
+            {id: 'q5_4', text: 'Puedo lavar los platos sin que me produzca repulsión.', factor: 'escrupulosidad', scores: {'nada': 2, 'poco': 1, 'bastante': 0, 'muy': 0}},
+            {id: 'q5_5', text: 'Cada vez que ropa de calle toca mi cama, cambio las sábanas.', factor: 'escrupulosidad', scores: {'nada': 0, 'poco': 0, 'bastante': 1, 'muy': 2}},
+            {id: 'q5_6', text: 'Puedo compartir productos de belleza con otra persona.', factor: 'escrupulosidad', scores: {'nada': 2, 'poco': 1, 'bastante': 0, 'muy': 0}},
+            
+            // Cuestionario 6 – Extroversión
+            {id: 'q6_1', text: 'Estás en un grupo lleno de desconocidos y nadie habla. ¿Te atreves a sacar tema de conversación y socializar?', factor: 'extroversion', scores: {'nada': 0, 'poco': 0, 'bastante': 1, 'muy': 2}},
+            {id: 'q6_2', text: 'Si acudes a un restaurante y te ponen un plato que no has pedido y no te gusta, ¿pedirías que te lo cambien?', factor: 'extroversion', scores: {'nada': 0, 'poco': 0, 'bastante': 1, 'muy': 2}},
+            {id: 'q6_3', text: 'Tú y una amistad tenéis que pedir a domicilio, ¿le pedirías que llame?', factor: 'extroversion', scores: {'nada': 2, 'poco': 1, 'bastante': 0, 'muy': 0}},
+            {id: 'q6_4', text: 'Si estás en una clase solo y tus amistades están en otra clase, ¿pedirías el cambio de clase?', factor: 'extroversion', scores: {'nada': 0, 'poco': 0, 'bastante': 1, 'muy': 2}},
+            {id: 'q6_5', text: 'Si te surge una duda en clase, te la explican y sigues sin entender, ¿te quedarías con la duda?', factor: 'extroversion', scores: {'nada': 2, 'poco': 1, 'bastante': 0, 'muy': 0}},
+            {id: 'q6_6', text: 'Si vas a un karaoke con tus amistades y te animan a cantar solo, ¿les dirías que no?', factor: 'extroversion', scores: {'nada': 2, 'poco': 1, 'bastante': 0, 'muy': 0}}
+        ];
+
+        // Shuffle questions
+        const shuffledQuestions = questions.sort(() => Math.random() - 0.5);
+        
+        const container = document.getElementById('questionsContainer');
+        
+        shuffledQuestions.forEach((q, index) => {
+            const questionDiv = document.createElement('div');
+            questionDiv.className = 'question-container';
+            questionDiv.innerHTML = `
+                <div class="question-number">Pregunta ${index + 1} de ${shuffledQuestions.length}</div>
+                <div class="question-text">${q.text}</div>
+                <div class="options">
+                    <div class="option">
+                        <input type="radio" id="${q.id}_nada" name="${q.id}" value="nada" required>
+                        <label for="${q.id}_nada">Nada probable</label>
+                    </div>
+                    <div class="option">
+                        <input type="radio" id="${q.id}_poco" name="${q.id}" value="poco">
+                        <label for="${q.id}_poco">Poco probable</label>
+                    </div>
+                    <div class="option">
+                        <input type="radio" id="${q.id}_bastante" name="${q.id}" value="bastante">
+                        <label for="${q.id}_bastante">Bastante probable</label>
+                    </div>
+                    <div class="option">
+                        <input type="radio" id="${q.id}_muy" name="${q.id}" value="muy">
+                        <label for="${q.id}_muy">Muy probable</label>
+                    </div>
+                </div>
+            `;
+            container.appendChild(questionDiv);
+        });
+
+        // Progress bar update
+        const form = document.getElementById('testForm');
+        const progressFill = document.getElementById('progressFill');
+        
+        form.addEventListener('change', () => {
+            const answered = document.querySelectorAll('input[type="radio"]:checked').length;
+            const progress = (answered / shuffledQuestions.length) * 100;
+            progressFill.style.width = progress + '%';
+        });
+
+        // Form submission
+        form.addEventListener('submit', (e) => {
+            e.preventDefault();
+            
+            // Verificar que todas las preguntas estén respondidas
+            const answered = document.querySelectorAll('input[type="radio"]:checked').length;
+            if (answered < shuffledQuestions.length) {
+                alert(`Por favor, responde todas las preguntas. Te faltan ${shuffledQuestions.length - answered} preguntas.`);
+                return;
+            }
+            
+            const scores = {
+                'riseño': 0,
+                'amabilidad': 0,
+                'sociabilidad': 0,
+                'celos': 0,
+                'escrupulosidad': 0,
+                'extroversion': 0
+            };
+            
+            const maxScores = {
+                'riseño': 10,
+                'amabilidad': 12,
+                'sociabilidad': 12,
+                'celos': 12,
+                'escrupulosidad': 12,
+                'extroversion': 12
+            };
+            
+            shuffledQuestions.forEach(q => {
+                const selected = document.querySelector(`input[name="${q.id}"]:checked`);
+                if (selected) {
+                    scores[q.factor] += q.scores[selected.value];
+                }
+            });
+            
+            const factorNames = {
+                'riseño': 'Carácter Risueño',
+                'amabilidad': 'Amabilidad y Empatía',
+                'sociabilidad': 'Sociabilidad e Iniciativa',
+                'celos': 'Celos e Inseguridad Afectiva',
+                'escrupulosidad': 'Escrupulosidad y Limpieza',
+                'extroversion': 'Extroversión'
+            };
+            
+            const resultsContainer = document.getElementById('resultsContainer');
+            resultsContainer.innerHTML = '';
+            
+            for (let factor in scores) {
+                const resultCard = document.createElement('div');
+                resultCard.className = 'result-card';
+                resultCard.innerHTML = `
+                    <div class="result-title">${factorNames[factor]}</div>
+                    <div class="result-score">${scores[factor]} <span class="result-max">/ ${maxScores[factor]} puntos</span></div>
+                `;
+                resultsContainer.appendChild(resultCard);
+            }
+            
+            document.getElementById('testForm').classList.add('hidden');
+            document.getElementById('results').classList.add('show');
+            window.scrollTo(0, 0);
+        });
+    </script>
+</body>
+</html>
