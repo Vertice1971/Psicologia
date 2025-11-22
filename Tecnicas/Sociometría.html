@@ -19,7 +19,7 @@
         }
         
         .container {
-            max-width: 1200px;
+            max-width: 1400px;
             margin: 0 auto;
             background: white;
             border-radius: 15px;
@@ -282,7 +282,7 @@
         <h1>📊 Tabla Sociométrica</h1>
         
         <div class="config-section" id="configSection">
-            <h2>Configuración-Versión beta-Tomás Cuesta</h2>
+            <h2>Configuración - Versión beta - Tomás Cuesta</h2>
             
             <div class="form-group">
                 <label for="relationTitle">Título de la relación medida:</label>
@@ -291,7 +291,7 @@
             
             <div class="form-group">
                 <label for="numUsers">Número de participantes:</label>
-                <input type="number" id="numUsers" min="2" max="26" value="5">
+                <input type="number" id="numUsers" min="2" max="40" value="5">
             </div>
             
             <div class="form-group">
@@ -357,6 +357,18 @@
         
         const arrowColors = ['#e74c3c', '#3498db', '#2ecc71', '#f39c12', '#9b59b6', '#1abc9c', '#e67e22', '#34495e', '#16a085', '#d35400'];
         
+        // Letras griegas para participantes más allá de Z
+        const greekLetters = ['Α', 'Β', 'Γ', 'Δ', 'Ε', 'Ζ', 'Η', 'Θ', 'Ι', 'Κ', 'Λ', 'Μ', 'Ν', 'Ξ'];
+        
+        // Función para obtener la etiqueta del participante
+        function getParticipantLabel(index) {
+            if (index < 26) {
+                return String.fromCharCode(65 + index);
+            } else {
+                return greekLetters[index - 26];
+            }
+        }
+        
         // Mostrar inputs de puntos cuando cambia el número de elecciones
         document.getElementById('numChoices').addEventListener('input', function() {
             const numChoices = parseInt(this.value);
@@ -395,8 +407,8 @@
                 return;
             }
             
-            if (numUsers < 2 || numUsers > 26) {
-                alert('El número de participantes debe estar entre 2 y 26');
+            if (numUsers < 2 || numUsers > 40) {
+                alert('El número de participantes debe estar entre 2 y 40');
                 return;
             }
             
@@ -453,7 +465,7 @@
             
             for (let i = 0; i < config.numUsers; i++) {
                 const th = document.createElement('th');
-                th.textContent = String.fromCharCode(65 + i);
+                th.textContent = getParticipantLabel(i);
                 headerRow.appendChild(th);
             }
             thead.appendChild(headerRow);
@@ -464,7 +476,7 @@
             for (let row = 0; row < config.numUsers; row++) {
                 const tr = document.createElement('tr');
                 const th = document.createElement('th');
-                th.textContent = String.fromCharCode(65 + row);
+                th.textContent = getParticipantLabel(row);
                 tr.appendChild(th);
                 
                 for (let col = 0; col < config.numUsers; col++) {
@@ -525,14 +537,14 @@
                         const numValue = parseInt(value);
                         
                         if (numValue < 1 || numValue > config.numChoices) {
-                            errorMsg.textContent = `Error en ${String.fromCharCode(65 + row)}: El valor debe estar entre 1 y ${config.numChoices}`;
+                            errorMsg.textContent = `Error en ${getParticipantLabel(row)}: El valor debe estar entre 1 y ${config.numChoices}`;
                             errorMsg.style.display = 'block';
                             input.focus();
                             return;
                         }
                         
                         if (choices.includes(numValue)) {
-                            errorMsg.textContent = `Error en ${String.fromCharCode(65 + row)}: No puedes repetir el mismo orden de elección`;
+                            errorMsg.textContent = `Error en ${getParticipantLabel(row)}: No puedes repetir el mismo orden de elección`;
                             errorMsg.style.display = 'block';
                             input.focus();
                             return;
@@ -674,7 +686,7 @@
                 positions.push({
                     x: centerX + radius * Math.cos(angle),
                     y: centerY + radius * Math.sin(angle),
-                    label: String.fromCharCode(65 + i),
+                    label: getParticipantLabel(i),
                     points: sociogramData.totals[i]
                 });
             }
