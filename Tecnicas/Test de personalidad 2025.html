@@ -100,12 +100,14 @@
 
     <script>
         const questions = [
+            // CARÁCTER RISUEÑO (5 preguntas, máximo 10 puntos)
             {id: 'q1_1', text: '¿En una entrevista de trabajo, sabrías parecer una persona seria?', factor: 'caracter_risueno', scores: {'nada': 2, 'poco': 1, 'bastante': 0, 'muy': 0}},
-            {id: 'q1_2', text: '¿El estrés provocado por un examen hace que empeore tu estado de ánimo?', factor: 'caracter_risueno', scores: {'nada': 2, 'poco': 1, 'bastante': 0, 'muy': 0}},
-            {id: 'q1_3', text: 'Cuando te encuentras en un espacio público (como por ejemplo un ascensor), ¿tiendes a reírte?', factor: 'caracter_risueno', scores: {'nada': 0, 'poco': 0, 'bastante': 1, 'muy': 2}},
-            {id: 'q1_4', text: 'Si una persona con la que vas tropieza y cae, ¿tiendes a reírte?', factor: 'caracter_risueno', scores: {'nada': 0, 'poco': 0, 'bastante': 1, 'muy': 2}},
-            {id: 'q1_5', text: 'Te encuentras exponiendo en medio de clase, ¿te reirías?', factor: 'caracter_risueno', scores: {'nada': 0, 'poco': 0, 'bastante': 1, 'muy': 2}},
+            {id: 'q1_2', text: 'Cuando te encuentras en un espacio público (como por ejemplo un ascensor), ¿tiendes a reírte?', factor: 'caracter_risueno', scores: {'nada': 0, 'poco': 0, 'bastante': 1, 'muy': 2}},
+            {id: 'q1_3', text: 'Si una persona con la que vas tropieza y cae, ¿tiendes a reírte?', factor: 'caracter_risueno', scores: {'nada': 0, 'poco': 0, 'bastante': 1, 'muy': 2}},
+            {id: 'q1_4', text: 'Te encuentras exponiendo en medio de clase, ¿te reirías?', factor: 'caracter_risueno', scores: {'nada': 0, 'poco': 0, 'bastante': 1, 'muy': 2}},
+            {id: 'q1_5', text: '¿Te resulta difícil contener la risa en situaciones inadecuadas?', factor: 'caracter_risueno', scores: {'nada': 0, 'poco': 0, 'bastante': 1, 'muy': 2}},
 
+            // AMABILIDAD (6 preguntas, máximo 12 puntos)
             {id: 'q2_1', text: 'Si veo a una persona mayor con dificultad para cruzar, la ignoro.', factor: 'amabilidad', scores: {'nada': 2, 'poco': 1, 'bastante': 0, 'muy': 0}},
             {id: 'q2_2', text: 'Si una persona no tiene comida, le comparto la mía.', factor: 'amabilidad', scores: {'nada': 0, 'poco': 0, 'bastante': 1, 'muy': 2}},
             {id: 'q2_3', text: 'Si alguien no llega a coger algo de una estantería, le ayudo.', factor: 'amabilidad', scores: {'nada': 0, 'poco': 0, 'bastante': 1, 'muy': 2}},
@@ -113,6 +115,7 @@
             {id: 'q2_5', text: 'Cuando voy a un restaurante, no doy las gracias al personal.', factor: 'amabilidad', scores: {'nada': 2, 'poco': 1, 'bastante': 0, 'muy': 0}},
             {id: 'q2_6', text: 'Si alguien no ha terminado la tarea y yo sí, le ignoro.', factor: 'amabilidad', scores: {'nada': 2, 'poco': 1, 'bastante': 0, 'muy': 0}},
 
+            // CELOS (6 preguntas, máximo 12 puntos) - ✅ CORREGIDA q3_5
             {id: 'q3_1', text: '¿Te molestarías si tu pareja está hablando con otra persona que puede estar interesada en ella y le acaricia el pelo?', factor: 'celos', scores: {'nada': 0, 'poco': 0, 'bastante': 1, 'muy': 2}},
             {id: 'q3_2', text: '¿Te incomodaría ver a tu pareja hablando con otra persona que puede estar interesada en ella online?', factor: 'celos', scores: {'nada': 0, 'poco': 0, 'bastante': 1, 'muy': 2}},
             {id: 'q3_3', text: '¿Te afectaría que tu pareja preste una sudadera a otra persona que puede estar interesada en ella?', factor: 'celos', scores: {'nada': 0, 'poco': 0, 'bastante': 1, 'muy': 2}},
@@ -120,6 +123,7 @@
             {id: 'q3_5', text: 'Si una antigua relación de tu pareja está llorando, ¿llamarías a tu pareja para que vaya a consolarla?', factor: 'celos', scores: {'nada': 2, 'poco': 1, 'bastante': 0, 'muy': 0}},
             {id: 'q3_6', text: '¿Te molestaría que tu pareja ayudase a otra persona que puede estar interesada en ella si lo necesita?', factor: 'celos', scores: {'nada': 0, 'poco': 0, 'bastante': 1, 'muy': 2}},
 
+            // ESCRUPULOSIDAD (6 preguntas, máximo 12 puntos)
             {id: 'q4_1', text: 'No me afecta utilizar el transporte público o incluso comer en él si es necesario.', factor: 'escrupulosidad', scores: {'nada': 2, 'poco': 1, 'bastante': 0, 'muy': 0}},
             {id: 'q4_2', text: 'Me provocan rechazo las migas y restos de comida de otra persona.', factor: 'escrupulosidad', scores: {'nada': 0, 'poco': 0, 'bastante': 1, 'muy': 2}},
             {id: 'q4_3', text: 'No soy capaz de comer del mismo recipiente que otra persona.', factor: 'escrupulosidad', scores: {'nada': 0, 'poco': 0, 'bastante': 1, 'muy': 2}},
@@ -127,6 +131,7 @@
             {id: 'q4_5', text: 'Cada vez que ropa de calle toca mi cama, cambio las sábanas.', factor: 'escrupulosidad', scores: {'nada': 0, 'poco': 0, 'bastante': 1, 'muy': 2}},
             {id: 'q4_6', text: 'Puedo compartir productos de higiene o belleza con otra persona.', factor: 'escrupulosidad', scores: {'nada': 2, 'poco': 1, 'bastante': 0, 'muy': 0}},
 
+            // EXTROVERSIÓN (6 preguntas, máximo 12 puntos)
             {id: 'q5_1', text: 'Estás en un grupo lleno de desconocidos y nadie habla. ¿Te atreves a iniciar conversación?', factor: 'extroversion', scores: {'nada': 0, 'poco': 0, 'bastante': 1, 'muy': 2}},
             {id: 'q5_2', text: 'Si te sirven un plato que no has pedido, ¿pedirías que lo cambien?', factor: 'extroversion', scores: {'nada': 0, 'poco': 0, 'bastante': 1, 'muy': 2}},
             {id: 'q5_3', text: 'Si vais a pedir comida a domicilio, ¿le pedirías a otra persona que llame por ti?', factor: 'extroversion', scores: {'nada': 2, 'poco': 1, 'bastante': 0, 'muy': 0}},
@@ -137,23 +142,23 @@
 
         const interpretations = {
             'caracter_risueno': [
-                { max: 4, title: 'Eres una persona seria o tranquila', text: 'Suelen mantener una actitud contenida en contextos sociales, con tendencia a la serenidad y el autocontrol emocional. Pueden mostrarse más reservados en situaciones espontáneas.' },
+                { max: 3, title: 'Eres una persona seria o tranquila', text: 'Suelen mantener una actitud contenida en contextos sociales, con tendencia a la serenidad y el autocontrol emocional. Pueden mostrarse más reservados en situaciones espontáneas.' },
                 { max: 6, title: 'A veces te ríes, otras veces no', text: 'Alternan momentos de seriedad con expresiones de humor o risa, adaptándose con flexibilidad a distintas situaciones sociales.' },
                 { max: 10, title: 'Te ríes con facilidad y te muestras espontáneo', text: 'Tienen una disposición natural hacia la risa y la expresión emocional abierta. Suelen responder con espontaneidad y ligereza en entornos cotidianos.' }
             ],
             'amabilidad': [
-                { max: 3, title: 'Prefieres no implicarte mucho con los demás', text: 'Prefieren mantener cierta distancia emocional con los demás. Su forma de relacionarse prioriza la autonomía y puede estar menos enfocada en gestos explícitos de cuidado.' },
+                { max: 4, title: 'Prefieres no implicarte mucho con los demás', text: 'Prefieren mantener cierta distancia emocional con los demás. Su forma de relacionarse prioriza la autonomía y puede estar menos enfocada en gestos explícitos de cuidado.' },
                 { max: 8, title: 'Te importa el bienestar de los demás, pero con equilibrio', text: 'Combinan actitudes de respeto interpersonal con muestras puntuales de atención a las necesidades de otros.' },
                 { max: 12, title: 'Sueles cuidar y ayudar a las personas que te rodean', text: 'Muestran una sensibilidad destacada hacia el bienestar ajeno. Tienden a responder con disponibilidad y calidez ante situaciones sociales que requieren cooperación o ayuda.' }
             ],
             'celos': [
-                { max: 6, title: 'Te sientes seguro en tus relaciones', text: 'Tienden a confiar en sus vínculos afectivos y suelen manejar con equilibrio las situaciones que implican la presencia de terceras personas.' },
-                { max: 9, title: 'A veces te preocupan ciertas situaciones con tu pareja', text: 'Experimentan incomodidad o inquietud en contextos donde perciben señales de amenaza hacia sus relaciones afectivas.' },
+                { max: 4, title: 'Te sientes seguro en tus relaciones', text: 'Tienden a confiar en sus vínculos afectivos y suelen manejar con equilibrio las situaciones que implican la presencia de terceras personas.' },
+                { max: 8, title: 'A veces te preocupan ciertas situaciones con tu pareja', text: 'Experimentan incomodidad o inquietud en contextos donde perciben señales de amenaza hacia sus relaciones afectivas.' },
                 { max: 12, title: 'Vives las relaciones con mucha intensidad emocional', text: 'Pueden presentar una alta sensibilidad ante situaciones que interpretan como competencia afectiva. Les afectan especialmente las dudas o cambios en el vínculo.' }
             ],
             'escrupulosidad': [
-                { max: 3, title: 'Te adaptas bien a casi cualquier entorno', text: 'Se adaptan con facilidad a entornos diversos sin experimentar incomodidad relacionada con normas estrictas de higiene o contacto físico.' },
-                { max: 7, title: 'Te gusta el orden y la limpieza, pero sin obsesionarte', text: 'Muestran cierta atención a la limpieza y las normas de orden, sin que ello condicione su bienestar cotidiano.' },
+                { max: 4, title: 'Te adaptas bien a casi cualquier entorno', text: 'Se adaptan con facilidad a entornos diversos sin experimentar incomodidad relacionada con normas estrictas de higiene o contacto físico.' },
+                { max: 8, title: 'Te gusta el orden y la limpieza, pero sin obsesionarte', text: 'Muestran cierta atención a la limpieza y las normas de orden, sin que ello condicione su bienestar cotidiano.' },
                 { max: 12, title: 'Eres muy cuidadoso con lo que consideras limpio o higiénico', text: 'Tienen una sensibilidad elevada ante situaciones relacionadas con la higiene y el contacto físico. Pueden sentir incomodidad en contextos donde perciben desorden o falta de limpieza.' }
             ],
             'extroversion': [
