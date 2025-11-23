@@ -270,10 +270,47 @@
         
         #sociogramCanvas {
             width: 100%;
-            height: 700px;
+            height: 800px;
             border: 2px solid #667eea;
             border-radius: 10px;
+            background: white;
+        }
+        
+        .legend-box {
             background: #f8f9fa;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            border: 2px solid #667eea;
+        }
+        
+        .legend-box h3 {
+            color: #667eea;
+            margin-bottom: 15px;
+            font-size: 1.2em;
+        }
+        
+        .legend-items {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+        
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .legend-arrow {
+            width: 50px;
+            height: 20px;
+            position: relative;
+        }
+        
+        .legend-text {
+            color: #333;
+            font-size: 14px;
         }
     </style>
 </head>
@@ -334,6 +371,15 @@
         
         <div class="sociogram-section" id="sociogramSection">
             <div class="relation-title" id="sociogramTitle"></div>
+            
+            <div class="legend-box" id="legendBox">
+                <h3>Leyenda de elecciones:</h3>
+                <div class="legend-items" id="legendItems"></div>
+                <p style="color: #666; font-style: italic; margin-top: 15px; font-size: 13px;">
+                    * El tamaño del círculo representa los puntos totales recibidos por cada participante
+                </p>
+            </div>
+            
             <canvas id="sociogramCanvas"></canvas>
             <div style="margin-top: 20px;">
                 <button onclick="showTable()">Volver a la Tabla</button>
@@ -357,19 +403,14 @@
         
         const arrowColors = ['#e74c3c', '#3498db', '#2ecc71', '#f39c12', '#9b59b6', '#1abc9c', '#e67e22', '#34495e', '#16a085', '#d35400'];
         
-        // Letras para participantes (A-Z, luego letras griegas minúsculas, luego AA, AB, AC...)
         const greekLetters = ['α', 'β', 'γ', 'δ', 'ε', 'ζ', 'η', 'θ', 'ι', 'κ', 'λ', 'μ', 'ν', 'ξ', 'ο', 'π', 'ρ', 'σ', 'τ', 'υ', 'φ', 'χ', 'ψ', 'ω'];
         
-        // Función mejorada para obtener la etiqueta del participante
         function getParticipantLabel(index) {
             if (index < 26) {
-                // A-Z
                 return String.fromCharCode(65 + index);
             } else if (index < 26 + greekLetters.length) {
-                // Letras griegas
                 return greekLetters[index - 26];
             } else {
-                // AA, AB, AC, etc.
                 const adjustedIndex = index - 26 - greekLetters.length;
                 const firstLetter = String.fromCharCode(65 + Math.floor(adjustedIndex / 26));
                 const secondLetter = String.fromCharCode(65 + (adjustedIndex % 26));
@@ -377,7 +418,6 @@
             }
         }
         
-        // Mostrar inputs de puntos cuando cambia el número de elecciones
         document.getElementById('numChoices').addEventListener('input', function() {
             const numChoices = parseInt(this.value);
             const pointsConfig = document.getElementById('pointsConfig');
@@ -402,7 +442,6 @@
             }
         });
         
-        // Trigger inicial
         document.getElementById('numChoices').dispatchEvent(new Event('input'));
         
         function generateTable() {
@@ -425,7 +464,6 @@
                 return;
             }
             
-            // Recoger puntos
             const points = [];
             for (let i = 1; i <= numChoices; i++) {
                 const pointValue = parseInt(document.getElementById(`points${i}`).value);
@@ -453,10 +491,8 @@
             const table = document.getElementById('sociometryTable');
             table.innerHTML = '';
             
-            // Crear encabezado
             const thead = document.createElement('thead');
             
-            // Fila superior: "Persona elegida" centrado
             const topRow = document.createElement('tr');
             const topTh = document.createElement('th');
             topTh.colSpan = config.numUsers + 1;
@@ -465,7 +501,6 @@
             topRow.appendChild(topTh);
             thead.appendChild(topRow);
             
-            // Fila de letras
             const headerRow = document.createElement('tr');
             const cornerTh = document.createElement('th');
             cornerTh.textContent = 'Elige';
@@ -479,7 +514,6 @@
             thead.appendChild(headerRow);
             table.appendChild(thead);
             
-            // Crear cuerpo
             const tbody = document.createElement('tbody');
             for (let row = 0; row < config.numUsers; row++) {
                 const tr = document.createElement('tr');
@@ -510,7 +544,6 @@
                 tbody.appendChild(tr);
             }
             
-            // Fila de totales
             const totalsRow = document.createElement('tr');
             totalsRow.className = 'totals-row';
             totalsRow.innerHTML = '<th>PUNTOS TOTALES</th>';
@@ -531,7 +564,6 @@
             errorMsg.style.display = 'none';
             successMsg.style.display = 'none';
             
-            // Validar cada fila
             for (let row = 0; row < config.numUsers; row++) {
                 const choices = [];
                 
@@ -563,7 +595,6 @@
                 }
             }
             
-            // Calcular totales
             const totals = new Array(config.numUsers).fill(0);
             
             for (let row = 0; row < config.numUsers; row++) {
@@ -580,7 +611,6 @@
                 }
             }
             
-            // Quitar resaltados previos de todas las columnas
             for (let i = 0; i < config.numUsers; i++) {
                 const totalCell = document.getElementById(`total-${i}`);
                 totalCell.textContent = totals[i];
@@ -593,14 +623,12 @@
                         cell.parentElement.classList.remove('highlight-column');
                     }
                 }
-                // Quitar resaltado de celdas diagonales
                 const diagonalCell = document.querySelector(`#sociometryTable tbody tr:nth-child(${i + 1}) td:nth-child(${i + 2})`);
                 if (diagonalCell) {
                     diagonalCell.classList.remove('highlight-column');
                 }
             }
             
-            // Encontrar el máximo valor y TODOS los índices que lo tienen (para empates)
             const maxPoints = Math.max(...totals);
             const winnerIndices = [];
             
@@ -610,10 +638,8 @@
                 }
             }
             
-            // Resaltar TODAS las columnas ganadoras si hay puntos
             if (maxPoints > 0) {
                 winnerIndices.forEach(maxIndex => {
-                    // Resaltar todas las celdas de cada columna ganadora
                     for (let row = 0; row < config.numUsers; row++) {
                         if (row !== maxIndex) {
                             const cell = document.getElementById(`cell-${row}-${maxIndex}`);
@@ -621,19 +647,16 @@
                                 cell.parentElement.classList.add('highlight-column');
                             }
                         } else {
-                            // Resaltar celda diagonal
                             const diagonalCell = document.querySelector(`#sociometryTable tbody tr:nth-child(${maxIndex + 1}) td:nth-child(${maxIndex + 2})`);
                             if (diagonalCell) {
                                 diagonalCell.classList.add('highlight-column');
                             }
                         }
                     }
-                    // Resaltar celda de total de cada ganador
                     document.getElementById(`total-${maxIndex}`).classList.add('highlight-total');
                 });
             }
             
-            // Mostrar mensaje con información sobre empates
             if (winnerIndices.length > 1) {
                 const winnerLabels = winnerIndices.map(i => getParticipantLabel(i)).join(', ');
                 successMsg.textContent = `✓ Datos validados correctamente. Empate entre: ${winnerLabels} (${maxPoints} puntos cada uno)`;
@@ -646,7 +669,6 @@
             successMsg.style.display = 'block';
             document.getElementById('btnSociogram').style.display = 'inline-block';
             
-            // Guardar datos para el sociograma
             sociogramData.totals = [...totals];
             sociogramData.choices = [];
             
@@ -684,6 +706,7 @@
             document.getElementById('tableSection').style.display = 'none';
             document.getElementById('sociogramSection').style.display = 'block';
             document.getElementById('sociogramTitle').textContent = config.relationTitle;
+            createLegendHTML();
             drawSociogram();
         }
         
@@ -692,19 +715,63 @@
             document.getElementById('tableSection').style.display = 'block';
         }
         
+        function createLegendHTML() {
+            const legendItems = document.getElementById('legendItems');
+            legendItems.innerHTML = '';
+            
+            for (let i = 0; i < config.numChoices; i++) {
+                const color = arrowColors[i % arrowColors.length];
+                const width = Math.max(8 - i * 1.5, 2);
+                
+                const item = document.createElement('div');
+                item.className = 'legend-item';
+                
+                const canvas = document.createElement('canvas');
+                canvas.width = 60;
+                canvas.height = 25;
+                canvas.className = 'legend-arrow';
+                
+                const ctx = canvas.getContext('2d');
+                
+                ctx.beginPath();
+                ctx.moveTo(5, 12);
+                ctx.lineTo(45, 12);
+                ctx.strokeStyle = color;
+                ctx.lineWidth = width;
+                ctx.stroke();
+                
+                const headLength = 10;
+                ctx.beginPath();
+                ctx.moveTo(45, 12);
+                ctx.lineTo(45 - headLength * Math.cos(-Math.PI / 6), 12 - headLength * Math.sin(-Math.PI / 6));
+                ctx.lineTo(45 - headLength * Math.cos(Math.PI / 6), 12 - headLength * Math.sin(Math.PI / 6));
+                ctx.closePath();
+                ctx.fillStyle = color;
+                ctx.fill();
+                
+                const text = document.createElement('span');
+                text.className = 'legend-text';
+                text.textContent = `${i + 1}ª elección (${config.points[i]} puntos)`;
+                
+                item.appendChild(canvas);
+                item.appendChild(text);
+                legendItems.appendChild(item);
+            }
+        }
+        
         function drawSociogram() {
             const canvas = document.getElementById('sociogramCanvas');
             const ctx = canvas.getContext('2d');
             
-            // Ajustar tamaño del canvas
             canvas.width = canvas.offsetWidth;
             canvas.height = canvas.offsetHeight;
+            
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
             
             const centerX = canvas.width / 2;
             const centerY = canvas.height / 2;
             const radius = Math.min(canvas.width, canvas.height) * 0.35;
             
-            // Calcular posiciones de los círculos en forma circular
             const positions = [];
             for (let i = 0; i < config.numUsers; i++) {
                 const angle = (i * 2 * Math.PI / config.numUsers) - Math.PI / 2;
@@ -716,37 +783,27 @@
                 });
             }
             
-            // Limpiar canvas
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
-            
-            // Dibujar flechas primero (para que queden debajo de los círculos)
             sociogramData.choices.forEach(choice => {
                 const from = positions[choice.from];
                 const to = positions[choice.to];
                 const order = choice.order;
                 
-                // Color según el orden
                 const color = arrowColors[(order - 1) % arrowColors.length];
-                
-                // Grosor según el orden (más gruesa = primera elección)
                 const width = Math.max(8 - (order - 1) * 1.5, 2);
                 
                 drawArrow(ctx, from.x, from.y, to.x, to.y, color, width, positions);
             });
             
-            // Dibujar círculos
             const maxPoints = Math.max(...sociogramData.totals);
             const minRadius = 25;
             const maxRadius = 60;
             
             positions.forEach(pos => {
-                // Tamaño proporcional a los puntos
                 let circleRadius = minRadius;
                 if (maxPoints > 0) {
                     circleRadius = minRadius + (maxRadius - minRadius) * (pos.points / maxPoints);
                 }
                 
-                // Círculo
                 ctx.beginPath();
                 ctx.arc(pos.x, pos.y, circleRadius, 0, 2 * Math.PI);
                 ctx.fillStyle = '#667eea';
@@ -755,14 +812,12 @@
                 ctx.lineWidth = 3;
                 ctx.stroke();
                 
-                // Letra/etiqueta
                 ctx.fillStyle = 'white';
                 ctx.font = `bold ${Math.min(circleRadius * 0.7, 24)}px Arial`;
                 ctx.textAlign = 'center';
                 ctx.textBaseline = 'middle';
                 ctx.fillText(pos.label, pos.x, pos.y);
                 
-                // Puntos debajo
                 ctx.fillStyle = '#333';
                 ctx.font = `${Math.min(circleRadius * 0.4, 14)}px Arial`;
                 ctx.fillText(`(${pos.points})`, pos.x, pos.y + circleRadius + 15);
@@ -770,10 +825,8 @@
         }
         
         function drawArrow(ctx, fromX, fromY, toX, toY, color, width, positions) {
-            // Calcular el ángulo de la flecha
             const angle = Math.atan2(toY - fromY, toX - fromX);
             
-            // Calcular radios de los círculos origen y destino
             const maxPoints = Math.max(...sociogramData.totals);
             const minRadius = 25;
             const maxRadius = 60;
@@ -789,13 +842,11 @@
                 toRadius = minRadius + (maxRadius - minRadius) * (positions[toIndex].points / maxPoints);
             }
             
-            // Ajustar puntos de inicio y fin para que no entren en los círculos
             const startX = fromX + Math.cos(angle) * (fromRadius + 5);
             const startY = fromY + Math.sin(angle) * (fromRadius + 5);
             const endX = toX - Math.cos(angle) * (toRadius + 5);
             const endY = toY - Math.sin(angle) * (toRadius + 5);
             
-            // Dibujar línea
             ctx.beginPath();
             ctx.moveTo(startX, startY);
             ctx.lineTo(endX, endY);
@@ -803,7 +854,6 @@
             ctx.lineWidth = width;
             ctx.stroke();
             
-            // Dibujar punta de flecha
             const headLength = 15 + width;
             ctx.beginPath();
             ctx.moveTo(endX, endY);
