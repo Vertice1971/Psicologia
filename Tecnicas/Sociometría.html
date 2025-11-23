@@ -291,7 +291,7 @@
             
             <div class="form-group">
                 <label for="numUsers">Número de participantes:</label>
-                <input type="number" id="numUsers" min="2" max="40" value="5">
+                <input type="number" id="numUsers" min="2" max="100" value="5">
             </div>
             
             <div class="form-group">
@@ -357,15 +357,23 @@
         
         const arrowColors = ['#e74c3c', '#3498db', '#2ecc71', '#f39c12', '#9b59b6', '#1abc9c', '#e67e22', '#34495e', '#16a085', '#d35400'];
         
-        // Letras griegas para participantes más allá de Z
-        const greekLetters = ['Α', 'Β', 'Γ', 'Δ', 'Ε', 'Ζ', 'Η', 'Θ', 'Ι', 'Κ', 'Λ', 'Μ', 'Ν', 'Ξ'];
+        // Letras para participantes (A-Z, luego letras griegas minúsculas, luego AA, AB, AC...)
+        const greekLetters = ['α', 'β', 'γ', 'δ', 'ε', 'ζ', 'η', 'θ', 'ι', 'κ', 'λ', 'μ', 'ν', 'ξ', 'ο', 'π', 'ρ', 'σ', 'τ', 'υ', 'φ', 'χ', 'ψ', 'ω'];
         
-        // Función para obtener la etiqueta del participante
+        // Función mejorada para obtener la etiqueta del participante
         function getParticipantLabel(index) {
             if (index < 26) {
+                // A-Z
                 return String.fromCharCode(65 + index);
-            } else {
+            } else if (index < 26 + greekLetters.length) {
+                // Letras griegas
                 return greekLetters[index - 26];
+            } else {
+                // AA, AB, AC, etc.
+                const adjustedIndex = index - 26 - greekLetters.length;
+                const firstLetter = String.fromCharCode(65 + Math.floor(adjustedIndex / 26));
+                const secondLetter = String.fromCharCode(65 + (adjustedIndex % 26));
+                return firstLetter + secondLetter;
             }
         }
         
@@ -407,8 +415,8 @@
                 return;
             }
             
-            if (numUsers < 2 || numUsers > 40) {
-                alert('El número de participantes debe estar entre 2 y 40');
+            if (numUsers < 2 || numUsers > 100) {
+                alert('El número de participantes debe estar entre 2 y 100');
                 return;
             }
             
@@ -572,13 +580,12 @@
                 }
             }
             
-            // Mostrar totales y quitar resaltados previos
+            // Quitar resaltados previos de todas las columnas
             for (let i = 0; i < config.numUsers; i++) {
                 const totalCell = document.getElementById(`total-${i}`);
                 totalCell.textContent = totals[i];
                 totalCell.classList.remove('highlight-total');
                 
-                // Quitar resaltado previo de todas las columnas
                 for (let row = 0; row < config.numUsers; row++) {
                     const cellId = `cell-${row}-${i}`;
                     const cell = document.getElementById(cellId);
@@ -593,29 +600,47 @@
                 }
             }
             
-            // Encontrar el máximo valor y su índice
+            // Encontrar el máximo valor y TODOS los índices que lo tienen (para empates)
             const maxPoints = Math.max(...totals);
-            const maxIndex = totals.indexOf(maxPoints);
+            const winnerIndices = [];
             
-            // Resaltar solo la columna ganadora si hay puntos
+            for (let i = 0; i < totals.length; i++) {
+                if (totals[i] === maxPoints) {
+                    winnerIndices.push(i);
+                }
+            }
+            
+            // Resaltar TODAS las columnas ganadoras si hay puntos
             if (maxPoints > 0) {
-                // Resaltar todas las celdas de la columna ganadora
-                for (let row = 0; row < config.numUsers; row++) {
-                    if (row !== maxIndex) {
-                        const cell = document.getElementById(`cell-${row}-${maxIndex}`);
-                        if (cell) {
-                            cell.parentElement.classList.add('highlight-column');
-                        }
-                    } else {
-                        // Resaltar celda diagonal
-                        const diagonalCell = document.querySelector(`#sociometryTable tbody tr:nth-child(${maxIndex + 1}) td:nth-child(${maxIndex + 2})`);
-                        if (diagonalCell) {
-                            diagonalCell.classList.add('highlight-column');
+                winnerIndices.forEach(maxIndex => {
+                    // Resaltar todas las celdas de cada columna ganadora
+                    for (let row = 0; row < config.numUsers; row++) {
+                        if (row !== maxIndex) {
+                            const cell = document.getElementById(`cell-${row}-${maxIndex}`);
+                            if (cell) {
+                                cell.parentElement.classList.add('highlight-column');
+                            }
+                        } else {
+                            // Resaltar celda diagonal
+                            const diagonalCell = document.querySelector(`#sociometryTable tbody tr:nth-child(${maxIndex + 1}) td:nth-child(${maxIndex + 2})`);
+                            if (diagonalCell) {
+                                diagonalCell.classList.add('highlight-column');
+                            }
                         }
                     }
-                }
-                // Resaltar SOLO la celda de total del ganador
-                document.getElementById(`total-${maxIndex}`).classList.add('highlight-total');
+                    // Resaltar celda de total de cada ganador
+                    document.getElementById(`total-${maxIndex}`).classList.add('highlight-total');
+                });
+            }
+            
+            // Mostrar mensaje con información sobre empates
+            if (winnerIndices.length > 1) {
+                const winnerLabels = winnerIndices.map(i => getParticipantLabel(i)).join(', ');
+                successMsg.textContent = `✓ Datos validados correctamente. Empate entre: ${winnerLabels} (${maxPoints} puntos cada uno)`;
+            } else if (winnerIndices.length === 1) {
+                successMsg.textContent = `✓ Datos validados correctamente. Ganador: ${getParticipantLabel(winnerIndices[0])} (${maxPoints} puntos)`;
+            } else {
+                successMsg.textContent = '✓ Datos validados correctamente. Puntuaciones calculadas.';
             }
             
             successMsg.style.display = 'block';
@@ -730,16 +755,16 @@
                 ctx.lineWidth = 3;
                 ctx.stroke();
                 
-                // Letra
+                // Letra/etiqueta
                 ctx.fillStyle = 'white';
-                ctx.font = `bold ${circleRadius * 0.8}px Arial`;
+                ctx.font = `bold ${Math.min(circleRadius * 0.7, 24)}px Arial`;
                 ctx.textAlign = 'center';
                 ctx.textBaseline = 'middle';
                 ctx.fillText(pos.label, pos.x, pos.y);
                 
                 // Puntos debajo
                 ctx.fillStyle = '#333';
-                ctx.font = `${circleRadius * 0.4}px Arial`;
+                ctx.font = `${Math.min(circleRadius * 0.4, 14)}px Arial`;
                 ctx.fillText(`(${pos.points})`, pos.x, pos.y + circleRadius + 15);
             });
         }
